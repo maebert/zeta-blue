@@ -2,8 +2,16 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Zeta Blue",
+  "appearance": {
+    "default": "light"
+  },
+  "background": {
+    "decoration": "gradient"
+  },
   "colors": {
-    "primary": "#4A90E2"
+    "primary": "#4A90E2",
+    "light": "#4A90E2",
+    "dark": "#4A90E2"
   },
   "styling": {
     "eyebrows": "breadcrumbs"
