@@ -21,7 +21,7 @@
   },
   "fonts": {
     "heading": {
-      "family": "Crimson Text"
+      "family": "Fira Sans"
     },
     "body": {
       "family": "Fira Sans"
@@ -31,9 +31,11 @@
   "navigation": {
     "pages": [
       "introduction",
+      "breathwork",
       "breathing",
       "physiology",
-      "consciousness"
+      "consciousness",
+      "references"
     ]
   },
   "logo": {
