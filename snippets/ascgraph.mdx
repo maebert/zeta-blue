@@ -1,0 +1,110 @@
+export const ASCGraph = () => {
+
+    const [ug_per_kg, setUgPerKg] = useState(400);
+    const [chart, setChart] = useState(null);
+
+    const ug_psi_per_g = 10000;
+    const ug_psi_per_g_range = 0.2;
+
+    const hirschfeld = [
+        ["Anxiety", -0.5, 0.029],
+        ["Impaired Control & Cognition", 18.7, -0.007],
+        ["Disembodiment", 10.8, 0.067],
+        ["Blissful State", 13.8, 0.117],
+        ["Experience of Unity", 8.3, 0.099],
+        ["Spiritual Experience", -10.0, 0.132],
+        ["Insightfulness", 8.8, 0.095],
+        ["Changed Meaning of Percepts", 32.8, -0.010],
+        ["Audio-Visual Synesthesia", 20.2, 0.061],
+        ["Complex Imagery", 20.2, 0.117],
+        ["Elementary Imagery", 27.8, 0.111],
+    ];
+
+    const updateHirschfeldData = (ug_per_kg) => {
+        return hirschfeld.map(([name, intercept, slope]) => (slope * ug_per_kg + intercept));
+    };
+
+    useEffect(() => {
+        const data = {
+            labels: [
+                "Anxiety",
+                "Impaired Control & Cognition",
+                "Disembodiment",
+                "Blissful State",
+                "Experience of Unity",
+                "Spiritual Experience",
+                "Insightfulness",
+                "Changed Meaning of Percepts",
+                "Audio-Visual Synesthesia",
+                "Complex Imagery",
+                "Elementary Imagery",
+            ],
+            datasets: [
+                {
+                    label: 'Conscious Connected Breath',
+                    data: [21, 21, 51, 52, 45, 39, 41, 38, 53, 51, 43],
+                    fill: true,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgb(255, 99, 132)'
+                },
+                {
+                    label: 'Psilocybin',
+                    data: updateHirschfeldData(ug_per_kg),
+                    fill: true,
+                    backgroundColor: 'rgba(69, 29, 180, 0.2)',
+                    borderColor: 'rgb(69, 29, 180)'
+                }
+            ]
+        };
+
+        const config = {
+            type: 'radar',
+            data: data,
+            options: {
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                },
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 100,
+                        pointLabels: {
+                            color: (ctx) => {
+                                const i = ctx.index;
+                                if (i <= 2) return '#e74c3c';
+                                if (i <= 6) return '#2980b9';
+                                return '#27ae60';
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const ctx = document.getElementById('myChart');
+        const newChart = new Chart(ctx, config);
+        setChart(newChart);
+
+        return () => {
+            newChart.destroy();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (chart) {
+            chart.data.datasets[1].data = updateHirschfeldData(ug_per_kg);
+            chart.update();
+        }
+    }, [ug_per_kg, chart]);
+
+    return <div>
+        <canvas id="myChart"></canvas>
+        <div className="flex items-center justify-center">
+            <span className="text-sm text-gray-500 mr-2">Psilocybin Dosage:</span>
+            <input type="range" min="100" max="600" step="50" value={ug_per_kg} onChange={(e) => setUgPerKg(Number(e.target.value))} className="h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+            <span className="text-sm text-gray-500 ml-2">{ug_per_kg} μg/kg ({Math.round(ug_per_kg * 70 / ug_psi_per_g * 10) / 10}g ± {Math.round((ug_per_kg * 70 / ug_psi_per_g) * ug_psi_per_g_range * 10) / 10} of dried mushrooms for a 70kg person)</span>
+        </div>
+    </div>
+}
